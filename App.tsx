@@ -1,20 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, SafeAreaView, StatusBar } from 'react-native';
+import 'react-native-gesture-handler'
+import Router from './src/Router';
 
 export default function App() {
+
+  const backgroundStyle = {
+    flex: 1,
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={backgroundStyle}>
+      <StatusBar barStyle={'dark-content'} />
+      <Router />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
