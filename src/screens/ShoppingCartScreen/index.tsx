@@ -1,17 +1,29 @@
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
 import Button from '../../components/Button';
 import CartProductItem from '../../components/CartProductItem';
 
-import products from '../../data/cart';
+import { DataStore, Auth } from 'aws-amplify';
+import { Product, CartProduct } from '../../models';
 
 const ShoppingCartScreen = () => {
 
-    const totalPrice = products.reduce((summedPrice, product) => 
+    const totalPrice = cartProducts.reduce((summedPrice, product) => 
         summedPrice + product.item.price * product.quantity
     , 0);  
 
     const navigation = useNavigation();
+    
+    const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            DataStore.query(CartProduct).then(setCartProducts);
+        };
+        fetchProducts();
+    }, []);
 
     const onCheckout = () => {
         navigation.navigate('AddressScreen');
@@ -21,7 +33,7 @@ const ShoppingCartScreen = () => {
         <View style={styles.page}>
 
             <FlatList 
-                data={products}
+                data={cartProducts}
                 renderItem={({ item }) => (
                     <CartProductItem cartItem={item} />
                 )}
@@ -29,7 +41,7 @@ const ShoppingCartScreen = () => {
                 ListHeaderComponent={() => (
                     <View>
                         <Text style={{fontSize: 18}}>
-                            Subtotal ({products.length}) items: {" "}
+                            Subtotal ({cartProducts.length}) items: {" "}
                             <Text style={{color: '#e47911', fontWeight: 'bold'}}> ${totalPrice.toFixed(2)} </Text>
                         </Text>
 

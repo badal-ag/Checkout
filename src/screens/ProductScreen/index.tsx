@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
-import { Text, ScrollView } from 'react-native';
+import { Text, ScrollView, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { Auth, DataStore } from 'aws-amplify';
+import { Product, CartProduct } from '../../models';
+import { useNavigation } from '@react-navigation/native';
+
 import styles from './styles';
 import product from '../../data/product';
 import QuantitySelector from '../../components/QuantitySelector';
@@ -10,11 +14,54 @@ import ImageCarousel from '../../components/ImageCarousel';
 
 const ProductScreen = () => {
 
-    const [selectedOption, setSelectedOption] = useState(product.options ? product.options[0] : null);
+    const [selectedOption, setSelectedOption] = useState<string | undefined>(undefined);
     const [quantity, setQuantity] = useState(1);
 
     const route = useRoute();
-    console.warn(route.params);
+    const navigation = useNavigation();
+
+    const [product, setProduct] = useState<Product | undefined>(undefined);
+
+    useEffect(() => {
+
+        if(!route.params?.id) {
+            return;
+        }
+        DataStore.query(Product, route.params.id).then(setProduct);
+
+    }, [route.params?.id]);
+
+    useEffect(() => {
+        if(product?.options) {
+            setSelectedOption(product.options[0])
+        }
+    }, [])
+
+    if(!product) {
+        return <ActivityIndicator />;
+    }
+
+    const onAddToCart = async () => {
+
+        const userData = await Auth.currentAuthenticatedUser();
+
+        if(!product || !userData) {
+            return;
+        }
+
+        const newCartProduct = new CartProduct({
+            userSub: userData.attributes.sub,
+            quantity,
+            option: selectedOption,
+            productID: product.id,
+        });
+
+        await DataStore.save(newCartProduct);
+        navigation.navigate('cart');
+
+    }
+
+
 
     return (
         <ScrollView style={styles.root}>
@@ -33,9 +80,9 @@ const ProductScreen = () => {
             </Picker>
 
             <Text style={styles.price}>
-                ${product.price}{" "}
+                ${product.price.toFixed(2)}{" "}
                 {product.oldPrice && (
-                    <Text style={styles.oldPrice}>${product.oldPrice}</Text>
+                    <Text style={styles.oldPrice}>${product.oldPrice.toFixed(2)}</Text>
                 )}
             </Text>
 
@@ -45,9 +92,7 @@ const ProductScreen = () => {
 
             <Button
                 text={"Add to Cart"}
-                onPress={() => {
-                    console.warn("Add to Cart");
-                }}
+                onPress={onAddToCart}
                 containerStyles={{ backgroundColor: '#e3c985' }}
             />
 

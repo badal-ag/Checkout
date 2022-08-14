@@ -10,7 +10,6 @@ const ImageCarousel = ( { images }: {images: string[]} ) => {
         if(viewableItems.length > 0) {
             setActiveIndex(viewableItems[0].index || 0)
         }
-        console.log(viewableItems);
     }, []);
 
     return (

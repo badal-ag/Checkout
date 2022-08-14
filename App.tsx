@@ -2,7 +2,12 @@ import { View, SafeAreaView, StatusBar } from 'react-native';
 import 'react-native-gesture-handler'
 import Router from './src/Router';
 
-export default function App() {
+import Amplify from 'aws-amplify';
+import { withAuthenticator } from 'aws-amplify-react-native';
+import config from './src/aws-exports';
+Amplify.configure(config)
+
+const App = () => {
 
   const backgroundStyle = {
     flex: 1,
@@ -15,3 +20,5 @@ export default function App() {
     </View>
   );
 }
+
+export default withAuthenticator(App);

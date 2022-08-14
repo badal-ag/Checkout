@@ -24,7 +24,6 @@ const ProductItem = ( {item}: ProductItemProps) => {
     const navigation = useNavigation();
 
     const onPress = () => {
-        console.warn("Item Pressed");
         navigation.navigate('ProductDetails', {id: item.id});
     }
 
@@ -52,9 +51,9 @@ const ProductItem = ( {item}: ProductItemProps) => {
                 </View>
                 
                 <Text style={styles.price}>
-                    {item.price} {" "}
+                    ${item.price.toFixed(2)} {" "}
                     { item.oldPrice && (
-                        <Text style={styles.oldPrice}>${item.oldPrice}</Text>
+                        <Text style={styles.oldPrice}>${item.oldPrice.toFixed(2)}</Text>
                     )}
                 </Text>
 

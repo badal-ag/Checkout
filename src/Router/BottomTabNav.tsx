@@ -2,11 +2,10 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Entypo } from '@expo/vector-icons';
 
-import AddressScreen from '../screens/AddressScreen';
 import ProductScreen from '../screens/ProductScreen';
 import HomeStack from './HomeStack';
 import ShoppingCartStack from './ShoppingCartStack';
-import HomeScreen from '../screens/HomeScreen';
+import MenuScreen from '../screens/MenuScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -39,7 +38,7 @@ const BottomTabNav = () => {
                 />
                 <Tab.Screen 
                     name='profile' 
-                    component={AddressScreen} 
+                    component={ProductScreen} 
                     options={{ 
                         tabBarIcon: ({color}) => (
                             <Entypo name="user" color={color} size={25} />
@@ -48,7 +47,7 @@ const BottomTabNav = () => {
                 />
                 <Tab.Screen 
                     name='more' 
-                    component={ProductScreen} 
+                    component={MenuScreen} 
                     options={{ 
                         tabBarIcon: ({color}) => (
                             <Entypo name="menu" color={color} size={25} />
